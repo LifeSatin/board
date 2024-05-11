@@ -17,8 +17,6 @@ public class Board extends BaseEntity{
 
     private String board_name;
 
-    private int post_count;
-
     @OneToMany(mappedBy = "board")
     private List<Post> posts;
 }

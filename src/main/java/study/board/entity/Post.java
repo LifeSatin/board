@@ -28,10 +28,6 @@ public class Post {
 
     private String content;
 
-    private int view_count;
-
-    private int comment_count;
-
     //공지사항 여부
     @ColumnDefault("false")
     private Boolean isNotice;
