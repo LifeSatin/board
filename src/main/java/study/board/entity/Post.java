@@ -1,11 +1,11 @@
 package study.board.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,9 +16,13 @@ public class Post {
     @Column(name = "post_id")
     private long id;
 
-    private long board_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
 
-    private long member_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     private String title;
 
@@ -28,6 +32,12 @@ public class Post {
 
     private int comment_count;
 
+    //공지사항 여부
+    @ColumnDefault("false")
+    private Boolean isNotice;
+
     //첨부파일
-    
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 }
