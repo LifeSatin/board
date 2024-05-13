@@ -2,9 +2,10 @@ package study.board.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 @Builder
 public class BasicResponseDto {
     private String code;
