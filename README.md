@@ -10,3 +10,12 @@ https://www.erdcloud.com/p/xKFqYaQjbrWBfQoZp
 
 현재 스프링만 작업 중인 상태.
 
+Swagger
+스프링 MVC
+스프링 Validation
+스프링 데이터 JPA
+QueryDSL
+
+--------
+
+API 설계가 생각보다 어려움을 느꼈다.
