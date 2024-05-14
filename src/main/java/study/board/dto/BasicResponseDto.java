@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class BasicResponseDto {
     private String code;
     private String message;

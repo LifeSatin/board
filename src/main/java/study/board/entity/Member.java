@@ -3,6 +3,7 @@ package study.board.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.board.dto.SignupRequestDto;
 
 import java.util.List;
 
@@ -16,7 +17,8 @@ public class Member extends BaseEntity{
 
     private String username;
 
-    private String login_id;
+    @Column(name = "login_id")
+    private String loginId;
 
     private String password;
 
@@ -28,4 +30,10 @@ public class Member extends BaseEntity{
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
+
+    public Member(SignupRequestDto dto) {
+        this.username = dto.getUsername();
+        this.loginId = dto.getId();
+        this.password = dto.getPassword();
+    }
 }

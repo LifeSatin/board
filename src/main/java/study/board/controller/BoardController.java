@@ -1,4 +1,4 @@
-package study.board.Controller;
+package study.board.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import study.board.dto.BasicResponseDto;
 import study.board.dto.BoardNameRequestDto;
 
-import java.net.URI;
 //기능 구현 미완료
 @RestController
 @RequestMapping("/board")

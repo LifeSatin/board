@@ -1,4 +1,4 @@
-package study.board.Controller;
+package study.board.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
