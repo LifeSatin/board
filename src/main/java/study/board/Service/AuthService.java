@@ -1,30 +1,29 @@
 package study.board.Service;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.board.dto.LoginRequestDto;
-import study.board.dto.SignupRequestDto;
+import study.board.dto.request.LoginRequestDto;
+import study.board.dto.request.SignupRequestDto;
 import study.board.entity.Member;
 import study.board.exception.DuplicateIdException;
 import study.board.exception.DuplicateUsernameException;
-import study.board.repository.MemberRepository;
+import study.board.repository.member.MemberRepository;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final EntityManager em;
 
+    @Transactional
     public Member login(LoginRequestDto dto) {
         return memberRepository.findByLoginId(dto.getId())
                 .filter(m -> m.getPassword().equals(dto.getPassword()))
                 .orElse(null);
     }
 
+    @Transactional
     public long signup(SignupRequestDto dto) {
         Member newMember = new Member(dto);
         Member findDuplicateId = memberRepository.findByLoginId(newMember.getLoginId()).orElse(null);
@@ -34,7 +33,7 @@ public class AuthService {
         } else if (findDuplicateMember != null) {
             throw new DuplicateUsernameException();
         } else {
-            em.persist(newMember);
+            memberRepository.save(newMember);
         }
         return newMember.getId();
     }

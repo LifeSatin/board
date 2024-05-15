@@ -2,15 +2,20 @@ package study.board.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import study.board.dto.BasicResponseDto;
-import study.board.dto.CommentRequestDto;
+import study.board.dto.response.BasicResponseDto;
+import study.board.dto.request.CommentRequestDto;
 
 @RestController
 @RequestMapping("/post")
 @Tag(name = "Post")
+@RequiredArgsConstructor
 public class PostController {
+
+    private final MessageSource ms;
 
     @Operation(summary = "게시글 검색", description = "게시글 검색하기")
     @GetMapping("/search")
@@ -53,8 +58,8 @@ public class PostController {
     public ResponseEntity<BasicResponseDto> updatePost(@PathVariable long postId) {
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
-                        .code("SUC")
-                        .message("Success")
+                        .code(ms.getMessage("suc.code", null, null))
+                        .message(ms.getMessage("suc.message", null, null))
                         .build()
         );
     }
@@ -65,8 +70,8 @@ public class PostController {
     public ResponseEntity<BasicResponseDto> deletePost(@PathVariable long postId) {
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
-                        .code("SUC")
-                        .message("Success")
+                        .code(ms.getMessage("suc.code", null, null))
+                        .message(ms.getMessage("suc.message", null, null))
                         .build()
         );
     }

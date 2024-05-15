@@ -1,8 +1,7 @@
-package study.board.dto;
+package study.board.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class LoginRequestDto {

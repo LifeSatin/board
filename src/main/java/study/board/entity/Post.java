@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Post {
+public class Post extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "post_id")
@@ -22,15 +22,18 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member writer;
 
     private String title;
 
     private String content;
 
+    @Column(name = "view_count")
+    private long viewCount;
+
     //공지사항 여부
     @ColumnDefault("false")
-    private Boolean isNotice;
+    private Boolean isNotice = false;
 
     //첨부파일
 

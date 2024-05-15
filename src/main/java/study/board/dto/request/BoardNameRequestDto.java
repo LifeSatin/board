@@ -1,4 +1,4 @@
-package study.board.dto;
+package study.board.dto.request;
 
 import lombok.Getter;
 

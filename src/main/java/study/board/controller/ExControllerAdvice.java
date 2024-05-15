@@ -1,20 +1,28 @@
 package study.board.controller;
 
 import jakarta.persistence.Basic;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import study.board.dto.BasicResponseDto;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+import study.board.dto.response.BasicResponseDto;
 import study.board.exception.DuplicateIdException;
 import study.board.exception.DuplicateUsernameException;
 import study.board.exception.LoginFailException;
+import study.board.exception.NoUserException;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ExControllerAdvice {
+
+    private final MessageSource ms;
 
     @ExceptionHandler
     public ResponseEntity<BasicResponseDto> loginFailure(LoginFailException e) {
@@ -23,8 +31,8 @@ public class ExControllerAdvice {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(
                         BasicResponseDto.builder()
-                                .code("LMF")
-                                .message("Login information Mismatch Failure")
+                                .code(ms.getMessage("lmf.code", null, null))
+                                .message(ms.getMessage("lmf.message", null, null))
                                 .build()
                 );
     }
@@ -37,8 +45,8 @@ public class ExControllerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(
                         BasicResponseDto.builder()
-                                .code("VDF")
-                                .message("Validation Failure")
+                                .code(ms.getMessage("vdf.code", null, null))
+                                .message(ms.getMessage("vdf.message", null, null))
                                 .build()
                 );
     }
@@ -50,8 +58,8 @@ public class ExControllerAdvice {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
                         BasicResponseDto.builder()
-                                .code("DBE")
-                                .message("Database Error")
+                                .code(ms.getMessage("dbe.code", null, null))
+                                .message(ms.getMessage("dbe.message", null, null))
                                 .build()
                 );
     }
@@ -63,8 +71,8 @@ public class ExControllerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(
                         BasicResponseDto.builder()
-                                .code("DIF")
-                                .message("Duplicate ID Failure")
+                                .code(ms.getMessage("dif.code", null, null))
+                                .message(ms.getMessage("dif.message", null, null))
                                 .build()
                 );
     }
@@ -76,8 +84,48 @@ public class ExControllerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(
                         BasicResponseDto.builder()
-                                .code("DUF")
-                                .message("Duplicate Username Failure")
+                                .code(ms.getMessage("duf.code", null, null))
+                                .message(ms.getMessage("duf.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> unsupportedMethodFailure(HttpRequestMethodNotSupportedException e) {
+        log.error("method not supported", e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("nmf.code", null, null))
+                                .message(ms.getMessage("nmf.message", null, null))
+                                .build()
+                );
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> pageNotFoundFailure(NoResourceFoundException e) {
+        log.error("no page", e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("npf.code", null, null))
+                                .message(ms.getMessage("npf.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> noUserFoundFailure(NoUserException e) {
+        log.error("no user", e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("nue.code", null, null))
+                                .message(ms.getMessage("nue.message", null, null))
                                 .build()
                 );
     }

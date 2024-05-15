@@ -3,7 +3,9 @@ package study.board.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import study.board.dto.SignupRequestDto;
+import org.hibernate.annotations.ColumnDefault;
+import study.board.dto.request.MemberUpdateRequestDto;
+import study.board.dto.request.SignupRequestDto;
 
 import java.util.List;
 
@@ -23,17 +25,25 @@ public class Member extends BaseEntity{
     private String password;
 
     @Enumerated(value = EnumType.STRING)
-    private Role role;
+    @ColumnDefault("USER")
+    private Role role = Role.USER;
 
     @OneToMany(mappedBy = "member")
     private List<Comment> comments;
 
+/*
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
+*/
 
     public Member(SignupRequestDto dto) {
         this.username = dto.getUsername();
         this.loginId = dto.getId();
+        this.password = dto.getPassword();
+    }
+
+    public void update(MemberUpdateRequestDto dto) {
+        this.username = dto.getUsername();
         this.password = dto.getPassword();
     }
 }

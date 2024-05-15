@@ -1,9 +1,8 @@
-package study.board.dto;
+package study.board.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Builder
