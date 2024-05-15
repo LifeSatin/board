@@ -3,6 +3,7 @@ package study.board.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.board.dto.request.CommentRequestDto;
 
 @Entity
 @Getter
@@ -21,4 +22,13 @@ public class Comment extends BaseEntity{
     private Member member;
 
     private String content;
+
+    public void relationMapping(Post post, Member member) {
+        this.post = post;
+        this.member = member;
+    }
+
+    public Comment(CommentRequestDto dto) {
+        this.content = dto.getContent();
+    }
 }

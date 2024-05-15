@@ -1,15 +1,13 @@
 package study.board.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
-@AllArgsConstructor
-public class LoginRequestDto {
-
+public class PostUpdateRequestDto {
     @NotBlank
-    private String id;
+    private String title;
     @NotBlank
-    private String password;
+    private String content;
 }

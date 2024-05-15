@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import study.board.dto.request.PostCreateRequestDto;
+import study.board.dto.request.PostUpdateRequestDto;
 
 import java.util.List;
 
@@ -37,6 +39,29 @@ public class Post extends BaseEntity{
 
     //첨부파일
 
+    public Post(Member member, PostCreateRequestDto dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.writer = member;
+    }
+
+    public Post view() {
+        this.viewCount++;
+        return this;
+    }
+
+    public void boardMapping(Board board) {
+        this.board = board;
+    }
+
+    public void update(PostUpdateRequestDto dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+    }
+
+    /*
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
+
+     */
 }

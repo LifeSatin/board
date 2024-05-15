@@ -30,7 +30,7 @@ class UserControllerTest {
 
     @BeforeEach
     public void init() {
-        SignupRequestDto dto = new SignupRequestDto("0000", "test");
+        SignupRequestDto dto = new SignupRequestDto("test", "0000", "test");
         authController.signup(dto);
     }
 

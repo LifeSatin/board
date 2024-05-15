@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -37,8 +38,8 @@ public class ExControllerAdvice {
 
     //유효성 검사 실패
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentNotValidException.class})
-    public ResponseEntity<BasicResponseDto> validationFailure() {
-        log.error("validation fail");
+    public ResponseEntity<BasicResponseDto> validationFailure(Exception e) {
+        log.error("validation fail", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(
@@ -109,8 +110,8 @@ public class ExControllerAdvice {
                 .status(HttpStatus.NOT_FOUND)
                 .body(
                         BasicResponseDto.builder()
-                                .code(ms.getMessage("npf.code", null, null))
-                                .message(ms.getMessage("npf.message", null, null))
+                                .code(ms.getMessage("pnf.code", null, null))
+                                .message(ms.getMessage("pnf.message", null, null))
                                 .build()
                 );
     }
@@ -150,6 +151,32 @@ public class ExControllerAdvice {
                         BasicResponseDto.builder()
                                 .code(ms.getMessage("nbf.code", null, null))
                                 .message(ms.getMessage("nbf.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> noPostFoundFailure(NoPostException e) {
+        log.error("no post", e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("npf.code", null, null))
+                                .message(ms.getMessage("npf.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> asd(ServletRequestBindingException e) {
+        log.error("request without a login", e);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("auf.code", null, null))
+                                .message(ms.getMessage("auf.message", null, null))
                                 .build()
                 );
     }
