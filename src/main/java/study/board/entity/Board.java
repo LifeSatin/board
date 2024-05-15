@@ -3,6 +3,8 @@ package study.board.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.board.dto.request.BoardNameRequestDto;
+import study.board.dto.request.BoardUpdateRequestDto;
 
 import java.util.List;
 
@@ -15,8 +17,16 @@ public class Board extends BaseEntity{
     @Column(name = "board_id")
     private long id;
 
-    private String board_name;
+    @Column(name = "board_name")
+    private String boardName;
 
-    @OneToMany(mappedBy = "board")
-    private List<Post> posts;
+    public Board(BoardNameRequestDto dto) {
+        this.boardName = dto.getBoardName();
+    }
+
+    public void update(BoardNameRequestDto dto) {
+        this.boardName = dto.getBoardName();
+    }
+//    @OneToMany(mappedBy = "board")
+//    private List<Post> posts;
 }

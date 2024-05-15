@@ -8,14 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import study.board.dto.response.BasicResponseDto;
-import study.board.exception.DuplicateIdException;
-import study.board.exception.DuplicateUsernameException;
-import study.board.exception.LoginFailException;
-import study.board.exception.NoUserException;
+import study.board.exception.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -38,9 +36,9 @@ public class ExControllerAdvice {
     }
 
     //유효성 검사 실패
-    @ExceptionHandler
-    public ResponseEntity<BasicResponseDto> validationFailure(HttpMessageNotReadableException e) {
-        log.error("validation fail", e);
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentNotValidException.class})
+    public ResponseEntity<BasicResponseDto> validationFailure() {
+        log.error("validation fail");
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(
@@ -126,6 +124,32 @@ public class ExControllerAdvice {
                         BasicResponseDto.builder()
                                 .code(ms.getMessage("nue.code", null, null))
                                 .message(ms.getMessage("nue.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> duplicateBoardnameFailure(DuplicateBoardNameException e) {
+        log.error("dup board", e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("dbf.code", null, null))
+                                .message(ms.getMessage("dbf.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> noBoardFoundFailure(NoBoardException e) {
+        log.error("no board", e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("nbf.code", null, null))
+                                .message(ms.getMessage("nbf.message", null, null))
                                 .build()
                 );
     }

@@ -3,19 +3,18 @@ package study.board.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.data.domain.Page;
-import study.board.dto.domain.UserListDto;
-import study.board.entity.Role;
+import study.board.dto.domain.PostListDto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class UserListResponseDto {
+public class BoardResponseDto {
     private String code;
     private String message;
-    private List<UserListDto> userList;
+    private String boardName;
+    private long postCount;
+    private List<PostListDto> postList;
 }

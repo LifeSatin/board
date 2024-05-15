@@ -20,7 +20,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         return queryFactory
                 .select(new QBoardListDto(
                         board.id,
-                        board.board_name
+                        board.boardName
                 )).from(board)
                 .fetch();
     }

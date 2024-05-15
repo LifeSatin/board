@@ -23,9 +23,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<PostListDto> getPostListbyMemberId(long memberId, Pageable pageable) {
-        List<PostListDto> result = queryFactory
-                .select(new QPostListDto(
+    public List<PostListDto> getPostListbyMemberId(long memberId, Pageable pageable) {
+        return queryFactory.select(new QPostListDto(
                         post.id,
                         post.title,
                         post.writer.username,
@@ -41,13 +40,26 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
 
-        Long count = queryFactory
-                .select(post.count())
+    @Override
+    public List<PostListDto> getPostListbyBoard(long boardId, Pageable pageable) {
+        return queryFactory
+                .select(new QPostListDto(
+                        post.id,
+                        post.title,
+                        post.writer.username,
+                        post.viewCount,
+                        JPAExpressions
+                                .select(comment.count())
+                                .from(comment)
+                                .where(comment.post.id.eq(post.id)),
+                        post.createdDate
+                ))
                 .from(post)
-                .where(post.writer.id.eq(memberId))
-                .fetchOne();
-
-        return new PageImpl<>(result, pageable, count);
+                .where(post.board.id.eq(boardId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
     }
 }

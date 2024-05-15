@@ -1,16 +1,15 @@
 package study.board.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 @AllArgsConstructor
-public class SignupRequestDto {
+public class BoardUpdateRequestDto {
     @NotBlank
-    private String id;
+    private long boardId;
     @NotBlank
-    private String password;
-    @NotBlank
-    private String username;
+    private String boardName;
 }

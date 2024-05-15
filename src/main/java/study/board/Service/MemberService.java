@@ -1,7 +1,6 @@
 package study.board.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +10,10 @@ import study.board.entity.Member;
 import study.board.exception.NoUserException;
 import study.board.repository.member.MemberRepository;
 
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +23,10 @@ public class MemberService {
 
     //DTO 서식 좀 더 고쳐야됨
     @Transactional(readOnly = true)
-    public Page<UserListDto> getUserList(Pageable pageable) {
-        return memberRepository.findAll(pageable).map(UserListDto::new);
+    public List<UserListDto> getUserList(Pageable pageable) {
+        return memberRepository.findAllinList(pageable).stream()
+                .map(m -> new UserListDto(m))
+                .collect(toList());
     }
 
     @Transactional(readOnly = true)
