@@ -20,6 +20,7 @@ import study.board.exception.LoginFailException;
 import static study.board.SessionConst.*;
 
 //기능 구현 완료
+//이미 로그인한 사용자의 접근?
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

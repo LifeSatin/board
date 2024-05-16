@@ -3,6 +3,7 @@ package study.board.controller;
 import jakarta.persistence.Basic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -169,7 +170,7 @@ public class ExControllerAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<BasicResponseDto> asd(ServletRequestBindingException e) {
+    public ResponseEntity<BasicResponseDto> withoutLoginFailure(ServletRequestBindingException e) {
         log.error("request without a login", e);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
@@ -177,6 +178,19 @@ public class ExControllerAdvice {
                         BasicResponseDto.builder()
                                 .code(ms.getMessage("auf.code", null, null))
                                 .message(ms.getMessage("auf.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> noCommentFailure(NoCommentException e) {
+        log.error("no comment", e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("ncf.code", null, null))
+                                .message(ms.getMessage("ncf.message", null, null))
                                 .build()
                 );
     }

@@ -57,11 +57,6 @@ public class Post extends BaseEntity{
     public void update(PostUpdateRequestDto dto) {
         this.title = dto.getTitle();
         this.content = dto.getContent();
+        this.isNotice = dto.isNotice();
     }
-
-    /*
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
-
-     */
 }

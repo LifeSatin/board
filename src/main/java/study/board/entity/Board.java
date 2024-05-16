@@ -27,6 +27,4 @@ public class Board extends BaseEntity{
     public void update(BoardNameRequestDto dto) {
         this.boardName = dto.getBoardName();
     }
-//    @OneToMany(mappedBy = "board")
-//    private List<Post> posts;
 }

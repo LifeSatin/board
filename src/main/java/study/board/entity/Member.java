@@ -31,11 +31,6 @@ public class Member extends BaseEntity{
     @OneToMany(mappedBy = "member")
     private List<Comment> comments;
 
-/*
-    @OneToMany(mappedBy = "member")
-    private List<Post> posts;
-*/
-
     public Member(SignupRequestDto dto) {
         this.username = dto.getUsername();
         this.loginId = dto.getId();

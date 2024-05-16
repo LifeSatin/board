@@ -69,7 +69,6 @@ public class BoardController {
         );
     }
 
-    //location 리다이렉션에 postlist가 null로 뜸
     @Operation(summary = "게시판 생성", description = "새 게시판 생성")
     @PostMapping
     public ResponseEntity<BoardResponseDto> createBoard(@RequestBody @Validated BoardNameRequestDto boardNameRequestDto) {

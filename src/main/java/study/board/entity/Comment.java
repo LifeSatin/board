@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import study.board.dto.request.CommentRequestDto;
+import study.board.dto.request.CommentUpdateRequestDto;
 
 @Entity
 @Getter
@@ -23,12 +24,13 @@ public class Comment extends BaseEntity{
 
     private String content;
 
-    public void relationMapping(Post post, Member member) {
+    public Comment(CommentRequestDto dto, Post post, Member member) {
+        this.content = dto.getContent();
         this.post = post;
         this.member = member;
     }
 
-    public Comment(CommentRequestDto dto) {
+    public void update(CommentUpdateRequestDto dto) {
         this.content = dto.getContent();
     }
 }
