@@ -24,6 +24,7 @@ import study.board.entity.Post;
 import java.net.URI;
 import java.util.List;
 
+//관리자 설정 완료
 //파일 업로드는 후추
 @RestController
 @RequestMapping("/post")
@@ -94,8 +95,8 @@ public class PostController {
 
     @Operation(summary = "게시글 수정", description = "게시글 수정하기")
     @PatchMapping("/{postId}")
-    public ResponseEntity<BasicResponseDto> updatePost(@PathVariable long postId, @RequestBody @Validated PostUpdateRequestDto dto) {
-        postService.updatePost(postId, dto);
+    public ResponseEntity<BasicResponseDto> updatePost(@PathVariable long postId, @RequestBody @Validated PostUpdateRequestDto dto, @SessionAttribute(name = "loginMember") Member loginMember) {
+        postService.updatePost(postId, dto, loginMember);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))
@@ -107,8 +108,8 @@ public class PostController {
 
     @Operation(summary = "게시글 삭제", description = "게시글 삭제하기")
     @DeleteMapping("/{postId}")
-    public ResponseEntity<BasicResponseDto> deletePost(@PathVariable long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<BasicResponseDto> deletePost(@PathVariable long postId, @SessionAttribute(name = "loginMember") Member loginMember) {
+        postService.deletePost(postId, loginMember);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))

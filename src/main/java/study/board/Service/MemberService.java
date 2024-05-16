@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import study.board.dto.domain.UserListDto;
 import study.board.dto.request.MemberUpdateRequestDto;
 import study.board.entity.Member;
+import study.board.entity.Role;
+import study.board.exception.AuthorizationFailException;
 import study.board.exception.NoUserException;
 import study.board.repository.member.MemberRepository;
 
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.*;
+import static study.board.entity.Role.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +38,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(long id, MemberUpdateRequestDto dto) {
+    public void updateMember(long id, MemberUpdateRequestDto dto, Member member) {
         Member findMember = memberRepository.findById(id).orElseThrow(NoUserException::new);
-        findMember.update(dto);
+        if (findMember == member || member.getRole() == ADMIN) {
+            findMember.update(dto);
+        } else {
+            throw new AuthorizationFailException();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -46,8 +53,12 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(long id) {
+    public void deleteMember(long id, Member member) {
         Member findMember = memberRepository.findById(id).orElseThrow(NoUserException::new);
-        memberRepository.delete(findMember);
+        if (findMember == member || member.getRole() == ADMIN) {
+            memberRepository.delete(findMember);
+        } else {
+            throw new AuthorizationFailException();
+        }
     }
 }

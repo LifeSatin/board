@@ -24,11 +24,11 @@ class PostControllerTest {
     @BeforeEach
     public void init() {
         SignupRequestDto signUpDto = new SignupRequestDto("test", "0000", "test");
-        authController.signup(signUpDto);
+        //authController.signup(signUpDto);
         LoginRequestDto loginDto = new LoginRequestDto("test", "0000");
-        authController.login(loginDto, new MockHttpServletRequest());
+        //authController.login(loginDto, new MockHttpServletRequest());
         BoardNameRequestDto boardDto = new BoardNameRequestDto("전체 글 보기");
-        boardController.createBoard(boardDto);
+        //boardController.createBoard(boardDto);
     }
 
     @Test

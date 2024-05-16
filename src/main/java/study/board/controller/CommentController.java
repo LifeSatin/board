@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import study.board.Service.CommentService;
 import study.board.Service.PostService;
 import study.board.dto.request.CommentRequestDto;
+import study.board.dto.request.CommentUpdateRequestDto;
 import study.board.dto.response.BasicResponseDto;
 import study.board.dto.response.CommentResponseDto;
 import study.board.entity.Member;
 
 import java.net.URI;
 
+//관리자 관련 설정 완료
 @RestController
 @RequestMapping("/post/{postId}/comments")
 @Tag(name = "Comment")
@@ -52,13 +54,25 @@ public class CommentController {
 
     @Operation(summary = "댓글 수정", description = "댓글 수정하기")
     @PatchMapping("/{commentId}")
-    public void updateComment(@PathVariable long postId, @PathVariable long commentId) {
-
+    public ResponseEntity<BasicResponseDto> updateComment(CommentUpdateRequestDto dto, @PathVariable long postId, @PathVariable long commentId, @SessionAttribute(name = "loginMember") Member loginMember) {
+        commentService.updateComment(dto, commentId, loginMember);
+        return ResponseEntity.ok(
+                BasicResponseDto.builder()
+                        .code(ms.getMessage("suc.code", null, null))
+                        .message(ms.getMessage("suc.message", null, null))
+                        .build()
+        );
     }
 
     @Operation(summary = "댓글 삭제", description = "댓글 삭제하기")
     @DeleteMapping("/{commentId}")
-    public void deleteComment(@PathVariable long postId, @PathVariable long commentId) {
-
+    public ResponseEntity<BasicResponseDto> deleteComment(@PathVariable long postId, @PathVariable long commentId, @SessionAttribute(name = "loginMember") Member loginMember) {
+        commentService.deleteComment(commentId, loginMember);
+        return ResponseEntity.ok(
+                BasicResponseDto.builder()
+                        .code(ms.getMessage("suc.code", null, null))
+                        .message(ms.getMessage("suc.message", null, null))
+                        .build()
+        );
     }
 }

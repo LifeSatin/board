@@ -21,12 +21,14 @@ import study.board.dto.request.BoardNameRequestDto;
 import study.board.dto.response.BoardListResponseDto;
 import study.board.dto.response.BoardResponseDto;
 import study.board.entity.Board;
+import study.board.entity.Member;
 import study.board.exception.NoBoardException;
 
 import java.net.URI;
 import java.util.List;
 
 //기능 구현 미완료
+//관리자 관련 설정 완료
 @Slf4j
 @RestController
 @RequestMapping("/board")
@@ -71,8 +73,8 @@ public class BoardController {
 
     @Operation(summary = "게시판 생성", description = "새 게시판 생성")
     @PostMapping
-    public ResponseEntity<BoardResponseDto> createBoard(@RequestBody @Validated BoardNameRequestDto boardNameRequestDto) {
-        long boardId = boardService.createBoard(boardNameRequestDto);
+    public ResponseEntity<BoardResponseDto> createBoard(@RequestBody @Validated BoardNameRequestDto boardNameRequestDto, @SessionAttribute(name = "loginMember") Member loginMember) {
+        long boardId = boardService.createBoard(boardNameRequestDto, loginMember);
 
         return ResponseEntity.created(URI.create("/board/" + boardId))
                 .body(
@@ -85,8 +87,8 @@ public class BoardController {
 
     @Operation(summary = "게시판 수정", description = "게시판 제목 수정")
     @PatchMapping("/{boardId}")
-    public ResponseEntity<BasicResponseDto> updateBoard(@PathVariable long boardId, @RequestBody @Validated BoardNameRequestDto dto) {
-        boardService.updateBoard(boardId, dto);
+    public ResponseEntity<BasicResponseDto> updateBoard(@PathVariable long boardId, @RequestBody @Validated BoardNameRequestDto dto, @SessionAttribute(name = "loginMember") Member loginMember) {
+        boardService.updateBoard(boardId, dto, loginMember);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))
@@ -97,8 +99,8 @@ public class BoardController {
 
     @Operation(summary = "게시판 삭제", description = "게시판 삭제하기")
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<BasicResponseDto> deleteBoard(@PathVariable long boardId) {
-        boardService.deleteBoard(boardId);
+    public ResponseEntity<BasicResponseDto> deleteBoard(@PathVariable long boardId, @SessionAttribute(name = "loginMember") Member loginMember) {
+        boardService.deleteBoard(boardId, loginMember);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))

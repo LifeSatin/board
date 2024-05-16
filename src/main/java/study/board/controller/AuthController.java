@@ -32,15 +32,15 @@ public class AuthController {
 
     @Operation(summary = "로그인", description = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<BasicResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto, HttpServletRequest request) {
-        Member loginMember = authService.login(loginRequestDto);
+    public ResponseEntity<BasicResponseDto> login(@RequestBody @Validated LoginRequestDto loginRequestDto, HttpServletRequest request, @SessionAttribute(name = "loginMember") Member loginMember) {
+        Member member = authService.login(loginRequestDto);
 
-        if (loginMember == null) {
+        if (member == null) {
             throw new LoginFailException();
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute(LOGIN_MEMBER, loginMember);
+        session.setAttribute(LOGIN_MEMBER, member);
 
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
@@ -52,7 +52,7 @@ public class AuthController {
 
     @Operation(summary = "회원가입", description = "회원가입")
     @PostMapping("/signup")
-    public ResponseEntity<BasicResponseDto> signup(@RequestBody @Validated SignupRequestDto signupRequestDto) {
+    public ResponseEntity<BasicResponseDto> signup(@RequestBody @Validated SignupRequestDto signupRequestDto, @SessionAttribute(name = "loginMember") Member loginMember) {
         long newMemberId = authService.signup(signupRequestDto);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()

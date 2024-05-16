@@ -19,7 +19,7 @@ import study.board.entity.Member;
 import study.board.exception.DuplicateUsernameException;
 import study.board.exception.NoUserException;
 
-//관리자 접근 제외 구현 완료
+//관리자 접근 구현 완료
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class UserController {
 
     @Operation(summary = "회원 목록", description = "회원 목록 조회 (관리자용)")
     @GetMapping
-    public ResponseEntity<UserListResponseDto> getMembers(Pageable pageable) {
+    public ResponseEntity<UserListResponseDto> getMembers(Pageable pageable, @SessionAttribute(name = "loginMember") Member loginMember) {
         return ResponseEntity.ok(
                 UserListResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))
@@ -59,11 +59,11 @@ public class UserController {
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보 수정 (비밀번호, 닉네임 등)")
     @PatchMapping("/{userId}")
-    public ResponseEntity<BasicResponseDto> updateMember(@RequestBody @Validated MemberUpdateRequestDto dto, @PathVariable long userId) {
+    public ResponseEntity<BasicResponseDto> updateMember(@RequestBody @Validated MemberUpdateRequestDto dto, @PathVariable long userId, @SessionAttribute(name = "loginMember") Member loginMember) {
         Member updateCandidate = memberService.searchMemberByUsername(dto.getUsername()).orElse(null);
 
         if (updateCandidate == null) {
-            memberService.updateMember(userId, dto);
+            memberService.updateMember(userId, dto, loginMember);
         } else {
             throw new DuplicateUsernameException();
         }
@@ -78,8 +78,8 @@ public class UserController {
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
     @DeleteMapping("/{userId}")
-    public ResponseEntity<BasicResponseDto> deleteMember(@PathVariable long userId) {
-        memberService.deleteMember(userId);
+    public ResponseEntity<BasicResponseDto> deleteMember(@PathVariable long userId, @SessionAttribute(name = "loginMember") Member loginMember) {
+        memberService.deleteMember(userId, loginMember);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))

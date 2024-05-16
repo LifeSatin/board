@@ -7,12 +7,17 @@ import study.board.dto.domain.BoardListDto;
 import study.board.dto.request.BoardNameRequestDto;
 import study.board.dto.request.BoardUpdateRequestDto;
 import study.board.entity.Board;
+import study.board.entity.Member;
+import study.board.entity.Role;
+import study.board.exception.AuthorizationFailException;
 import study.board.exception.DuplicateBoardNameException;
 import study.board.exception.NoBoardException;
 import study.board.repository.board.BoardRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static study.board.entity.Role.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +36,10 @@ public class BoardService {
     }
 
     @Transactional
-    public long createBoard(BoardNameRequestDto dto) {
+    public long createBoard(BoardNameRequestDto dto, Member member) {
+        if (member.getRole() == ADMIN) {
+            throw new AuthorizationFailException();
+        }
         Board board = new Board(dto);
         if (boardRepository.findByBoardName(dto.getBoardName()).orElse(null) == null) {
             boardRepository.save(board);
@@ -42,7 +50,10 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(long boardId, BoardNameRequestDto dto) {
+    public void updateBoard(long boardId, BoardNameRequestDto dto, Member member) {
+        if (member.getRole() == ADMIN) {
+            throw new AuthorizationFailException();
+        }
         Board findBoard = boardRepository.findById(boardId).orElseThrow(NoBoardException::new);
         if (boardRepository.findByBoardName(dto.getBoardName()).orElse(null) == null) {
             findBoard.update(dto);
@@ -52,7 +63,10 @@ public class BoardService {
     }
 
     @Transactional
-    public void deleteBoard(long boardId) {
+    public void deleteBoard(long boardId, Member member) {
+        if (member.getRole() == ADMIN) {
+            throw new AuthorizationFailException();
+        }
         Board findBoard = boardRepository.findById(boardId).orElseThrow(NoBoardException::new);
         boardRepository.delete(findBoard);
     }

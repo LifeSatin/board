@@ -94,7 +94,7 @@ public class ExControllerAdvice {
     public ResponseEntity<BasicResponseDto> unsupportedMethodFailure(HttpRequestMethodNotSupportedException e) {
         log.error("method not supported", e);
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(
                         BasicResponseDto.builder()
                                 .code(ms.getMessage("nmf.code", null, null))
@@ -176,8 +176,8 @@ public class ExControllerAdvice {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(
                         BasicResponseDto.builder()
-                                .code(ms.getMessage("auf.code", null, null))
-                                .message(ms.getMessage("auf.message", null, null))
+                                .code(ms.getMessage("nlf.code", null, null))
+                                .message(ms.getMessage("nlf.message", null, null))
                                 .build()
                 );
     }
@@ -191,6 +191,19 @@ public class ExControllerAdvice {
                         BasicResponseDto.builder()
                                 .code(ms.getMessage("ncf.code", null, null))
                                 .message(ms.getMessage("ncf.message", null, null))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BasicResponseDto> authorizationFailure(RuntimeException e) {
+        log.error("authorization failed", e);
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(
+                        BasicResponseDto.builder()
+                                .code(ms.getMessage("auf.code", null, null))
+                                .message(ms.getMessage("auf.message", null, null))
                                 .build()
                 );
     }
