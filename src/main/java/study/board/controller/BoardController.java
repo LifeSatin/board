@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import study.board.Service.BoardService;
@@ -72,9 +73,10 @@ public class BoardController {
     }
 
     @Operation(summary = "게시판 생성", description = "새 게시판 생성")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<BoardResponseDto> createBoard(@RequestBody @Validated BoardNameRequestDto boardNameRequestDto, @SessionAttribute(name = "loginMember") Member loginMember) {
-        long boardId = boardService.createBoard(boardNameRequestDto, loginMember);
+    public ResponseEntity<BoardResponseDto> createBoard(@RequestBody @Validated BoardNameRequestDto boardNameRequestDto) {
+        long boardId = boardService.createBoard(boardNameRequestDto);
 
         return ResponseEntity.created(URI.create("/board/" + boardId))
                 .body(
@@ -86,9 +88,10 @@ public class BoardController {
     }
 
     @Operation(summary = "게시판 수정", description = "게시판 제목 수정")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/{boardId}")
-    public ResponseEntity<BasicResponseDto> updateBoard(@PathVariable long boardId, @RequestBody @Validated BoardNameRequestDto dto, @SessionAttribute(name = "loginMember") Member loginMember) {
-        boardService.updateBoard(boardId, dto, loginMember);
+    public ResponseEntity<BasicResponseDto> updateBoard(@PathVariable long boardId, @RequestBody @Validated BoardNameRequestDto dto) {
+        boardService.updateBoard(boardId, dto);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))
@@ -98,9 +101,10 @@ public class BoardController {
     }
 
     @Operation(summary = "게시판 삭제", description = "게시판 삭제하기")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<BasicResponseDto> deleteBoard(@PathVariable long boardId, @SessionAttribute(name = "loginMember") Member loginMember) {
-        boardService.deleteBoard(boardId, loginMember);
+    public ResponseEntity<BasicResponseDto> deleteBoard(@PathVariable long boardId) {
+        boardService.deleteBoard(boardId);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))

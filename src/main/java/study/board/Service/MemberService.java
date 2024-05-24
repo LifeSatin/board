@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import study.board.dto.domain.UserListDto;
 import study.board.dto.request.MemberUpdateRequestDto;
 import study.board.entity.Member;
-import study.board.entity.Role;
-import study.board.exception.AuthorizationFailException;
 import study.board.exception.NoUserException;
 import study.board.repository.member.MemberRepository;
 
@@ -38,13 +36,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(long id, MemberUpdateRequestDto dto, Member member) {
+    public void updateMember(long id, MemberUpdateRequestDto dto) {
         Member findMember = memberRepository.findById(id).orElseThrow(NoUserException::new);
-        if (findMember == member || member.getRole() == ADMIN) {
-            findMember.update(dto);
-        } else {
-            throw new AuthorizationFailException();
-        }
+        findMember.update(dto);
     }
 
     @Transactional(readOnly = true)
@@ -53,12 +47,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(long id, Member member) {
+    public void deleteMember(long id) {
         Member findMember = memberRepository.findById(id).orElseThrow(NoUserException::new);
-        if (findMember == member || member.getRole() == ADMIN) {
-            memberRepository.delete(findMember);
-        } else {
-            throw new AuthorizationFailException();
-        }
+        memberRepository.delete(findMember);
     }
 }

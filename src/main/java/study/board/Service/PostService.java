@@ -11,8 +11,6 @@ import study.board.dto.request.SearchRequestDto;
 import study.board.entity.Board;
 import study.board.entity.Member;
 import study.board.entity.Post;
-import study.board.entity.Role;
-import study.board.exception.AuthorizationFailException;
 import study.board.exception.NoBoardException;
 import study.board.exception.NoPostException;
 import study.board.exception.NoUserException;
@@ -60,23 +58,15 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(long postId, PostUpdateRequestDto dto, Member member) {
+    public void updatePost(long postId, PostUpdateRequestDto dto) {
         Post post = postRepository.findById(postId).orElseThrow(NoPostException::new);
-        if (post.getWriter() == member || member.getRole() == ADMIN) {
-            post.update(dto);
-        } else {
-            throw new AuthorizationFailException();
-        }
+        post.update(dto);
     }
 
     @Transactional
-    public void deletePost(long postId, Member member) {
+    public void deletePost(long postId) {
         Post post = postRepository.findById(postId).orElseThrow(NoPostException::new);
-        if (post.getWriter() == member || member.getRole() == ADMIN) {
-            postRepository.delete(post);
-        } else {
-            throw new AuthorizationFailException();
-        }
+        postRepository.delete(post);
     }
 
     @Transactional(readOnly = true)

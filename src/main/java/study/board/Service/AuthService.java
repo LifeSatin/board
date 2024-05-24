@@ -1,6 +1,7 @@
 package study.board.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.board.dto.request.LoginRequestDto;
@@ -15,6 +16,7 @@ import study.board.repository.member.MemberRepository;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Member login(LoginRequestDto dto) {
@@ -25,7 +27,7 @@ public class AuthService {
 
     @Transactional
     public long signup(SignupRequestDto dto) {
-        Member newMember = new Member(dto);
+        Member newMember = new Member(dto, passwordEncoder);
         Member findDuplicateId = memberRepository.findByLoginId(newMember.getLoginId()).orElse(null);
         Member findDuplicateMember = memberRepository.findByUsername(newMember.getUsername()).orElse(null);
         if (findDuplicateId != null) {
@@ -36,5 +38,10 @@ public class AuthService {
             memberRepository.save(newMember);
         }
         return newMember.getId();
+    }
+
+    @Transactional
+    public void logout() {
+
     }
 }

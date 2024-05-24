@@ -9,8 +9,6 @@ import study.board.dto.request.CommentUpdateRequestDto;
 import study.board.entity.Comment;
 import study.board.entity.Member;
 import study.board.entity.Post;
-import study.board.entity.Role;
-import study.board.exception.AuthorizationFailException;
 import study.board.exception.NoCommentException;
 import study.board.exception.NoPostException;
 import study.board.exception.NoUserException;
@@ -30,9 +28,10 @@ public class CommentService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
+    //User 손 보기
     @Transactional
-    public long createComment(Member member, CommentRequestDto dto, long postId) {
-        memberRepository.findById(member.getId()).orElseThrow(NoUserException::new);
+    public long createComment(String loginId, CommentRequestDto dto, long postId) {
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(NoUserException::new);
         Post post = postRepository.findById(postId).orElseThrow(NoPostException::new);
 
         Comment comment = new Comment(dto, post, member);
@@ -46,22 +45,14 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(CommentUpdateRequestDto dto, long commentId, Member member) {
+    public void updateComment(CommentUpdateRequestDto dto, long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(NoCommentException::new);
-        if (comment.getMember() == member || member.getRole() == ADMIN) {
-            comment.update(dto);
-        } else {
-            throw new AuthorizationFailException();
-        }
+        comment.update(dto);
     }
 
     @Transactional
-    public void deleteComment(long commentId, Member member) {
+    public void deleteComment(long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(NoCommentException::new);
-        if (comment.getMember() == member || member.getRole() == ADMIN) {
-            commentRepository.delete(comment);
-        } else {
-            throw new AuthorizationFailException();
-        }
+        commentRepository.delete(comment);
     }
 }

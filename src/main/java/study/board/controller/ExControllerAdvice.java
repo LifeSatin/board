@@ -103,7 +103,6 @@ public class ExControllerAdvice {
                 );
     }
 
-
     @ExceptionHandler
     public ResponseEntity<BasicResponseDto> pageNotFoundFailure(NoResourceFoundException e) {
         log.error("no page", e);
@@ -170,19 +169,6 @@ public class ExControllerAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<BasicResponseDto> withoutLoginFailure(ServletRequestBindingException e) {
-        log.error("request without a login", e);
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(
-                        BasicResponseDto.builder()
-                                .code(ms.getMessage("nlf.code", null, null))
-                                .message(ms.getMessage("nlf.message", null, null))
-                                .build()
-                );
-    }
-
-    @ExceptionHandler
     public ResponseEntity<BasicResponseDto> noCommentFailure(NoCommentException e) {
         log.error("no comment", e);
         return ResponseEntity
@@ -191,19 +177,6 @@ public class ExControllerAdvice {
                         BasicResponseDto.builder()
                                 .code(ms.getMessage("ncf.code", null, null))
                                 .message(ms.getMessage("ncf.message", null, null))
-                                .build()
-                );
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<BasicResponseDto> authorizationFailure(RuntimeException e) {
-        log.error("authorization failed", e);
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(
-                        BasicResponseDto.builder()
-                                .code(ms.getMessage("auf.code", null, null))
-                                .message(ms.getMessage("auf.message", null, null))
                                 .build()
                 );
     }

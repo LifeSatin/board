@@ -9,7 +9,6 @@ import study.board.dto.request.BoardUpdateRequestDto;
 import study.board.entity.Board;
 import study.board.entity.Member;
 import study.board.entity.Role;
-import study.board.exception.AuthorizationFailException;
 import study.board.exception.DuplicateBoardNameException;
 import study.board.exception.NoBoardException;
 import study.board.repository.board.BoardRepository;
@@ -36,10 +35,7 @@ public class BoardService {
     }
 
     @Transactional
-    public long createBoard(BoardNameRequestDto dto, Member member) {
-        if (member.getRole() == ADMIN) {
-            throw new AuthorizationFailException();
-        }
+    public long createBoard(BoardNameRequestDto dto) {
         Board board = new Board(dto);
         if (boardRepository.findByBoardName(dto.getBoardName()).orElse(null) == null) {
             boardRepository.save(board);
@@ -50,10 +46,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(long boardId, BoardNameRequestDto dto, Member member) {
-        if (member.getRole() == ADMIN) {
-            throw new AuthorizationFailException();
-        }
+    public void updateBoard(long boardId, BoardNameRequestDto dto) {
         Board findBoard = boardRepository.findById(boardId).orElseThrow(NoBoardException::new);
         if (boardRepository.findByBoardName(dto.getBoardName()).orElse(null) == null) {
             findBoard.update(dto);
@@ -63,10 +56,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void deleteBoard(long boardId, Member member) {
-        if (member.getRole() == ADMIN) {
-            throw new AuthorizationFailException();
-        }
+    public void deleteBoard(long boardId) {
         Board findBoard = boardRepository.findById(boardId).orElseThrow(NoBoardException::new);
         boardRepository.delete(findBoard);
     }

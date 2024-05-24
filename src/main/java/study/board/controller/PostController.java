@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import study.board.Service.CommentService;
@@ -81,6 +84,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 작성", description = "새 게시글 작성하기")
+    @PreAuthorize("hasAnyRole('USER')")
     @PostMapping
     public ResponseEntity<BasicResponseDto> createPost(@SessionAttribute(name = "loginMember") Member loginMember, @RequestBody @Validated PostCreateRequestDto dto) {
         long postId = postService.createPost(loginMember, dto);
@@ -94,9 +98,10 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 수정", description = "게시글 수정하기")
+    @PreAuthorize("hasAnyRole('USER')")
     @PatchMapping("/{postId}")
-    public ResponseEntity<BasicResponseDto> updatePost(@PathVariable long postId, @RequestBody @Validated PostUpdateRequestDto dto, @SessionAttribute(name = "loginMember") Member loginMember) {
-        postService.updatePost(postId, dto, loginMember);
+    public ResponseEntity<BasicResponseDto> updatePost(@RequestBody @Validated PostUpdateRequestDto dto, @PathVariable long postId, @AuthenticationPrincipal User user) {
+        postService.updatePost(postId, dto);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))
@@ -107,9 +112,10 @@ public class PostController {
 
 
     @Operation(summary = "게시글 삭제", description = "게시글 삭제하기")
+    @PreAuthorize("hasAnyRole('USER')")
     @DeleteMapping("/{postId}")
-    public ResponseEntity<BasicResponseDto> deletePost(@PathVariable long postId, @SessionAttribute(name = "loginMember") Member loginMember) {
-        postService.deletePost(postId, loginMember);
+    public ResponseEntity<BasicResponseDto> deletePost(@PathVariable long postId) {
+        postService.deletePost(postId);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import study.board.Service.MemberService;
@@ -31,6 +33,7 @@ public class UserController {
     private final PostService postService;
 
     @Operation(summary = "회원 목록", description = "회원 목록 조회 (관리자용)")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public ResponseEntity<UserListResponseDto> getMembers(Pageable pageable, @SessionAttribute(name = "loginMember") Member loginMember) {
         return ResponseEntity.ok(
@@ -58,12 +61,13 @@ public class UserController {
     }
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보 수정 (비밀번호, 닉네임 등)")
+    @PreAuthorize("hasAnyRole('USER')")
     @PatchMapping("/{userId}")
-    public ResponseEntity<BasicResponseDto> updateMember(@RequestBody @Validated MemberUpdateRequestDto dto, @PathVariable long userId, @SessionAttribute(name = "loginMember") Member loginMember) {
+    public ResponseEntity<BasicResponseDto> updateMember(@RequestBody @Validated MemberUpdateRequestDto dto, @PathVariable long userId) {
         Member updateCandidate = memberService.searchMemberByUsername(dto.getUsername()).orElse(null);
 
         if (updateCandidate == null) {
-            memberService.updateMember(userId, dto, loginMember);
+            memberService.updateMember(userId, dto);
         } else {
             throw new DuplicateUsernameException();
         }
@@ -77,9 +81,10 @@ public class UserController {
     }
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
+    @PreAuthorize("hasAnyRole('USER')")
     @DeleteMapping("/{userId}")
-    public ResponseEntity<BasicResponseDto> deleteMember(@PathVariable long userId, @SessionAttribute(name = "loginMember") Member loginMember) {
-        memberService.deleteMember(userId, loginMember);
+    public ResponseEntity<BasicResponseDto> deleteMember(@PathVariable long userId) {
+        memberService.deleteMember(userId);
         return ResponseEntity.ok(
                 BasicResponseDto.builder()
                         .code(ms.getMessage("suc.code", null, null))
